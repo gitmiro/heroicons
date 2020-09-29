@@ -1,6 +1,10 @@
 .DS_Store
-/node_modules
-/outline
-/solid
-/react
-/vue
+.idea/
+node_modules
+outline
+solid
+react
+vue
+dist
+angular/heroicons/src/lib/icons
+angular/heroicons/dist

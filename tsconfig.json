@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./angular/heroicons/tsconfig.lib.json"
+    },
+    {
+      "path": "./angular/heroicons/tsconfig.spec.json"
+    }
+  ]
+}

@@ -1,23 +1,53 @@
 {
   "name": "heroicons",
   "version": "0.4.2",
-  "main": "index.js",
   "license": "MIT",
+  "dependencies": {
+    "tslib": "^2.0.1"
+  },
   "devDependencies": {
+    "@angular/animations": "~10.1.3",
+    "@angular/common": "~10.1.3",
+    "@angular/core": "~10.1.3",
+    "@angular/forms": "~10.1.3",
+    "@angular/platform-browser": "~10.1.3",
+    "@angular/router": "~10.1.3",
+    "@angular/compiler": "~10.1.3",
+    "@angular-devkit/build-angular": "~0.1001.3",
+    "@angular/platform-browser-dynamic": "~10.1.3",
+    "@angular/compiler-cli": "~10.1.3",
+    "@angular/cli": "~10.1.3",
     "@svgr/cli": "^5.4.0",
     "@svgr/core": "^5.4.0",
-    "@vue/compiler-dom": "^3.0.0-beta.14",
+    "@vue/compiler-dom": "^3.0.0",
     "camelcase": "^6.0.0",
+    "cheerio": "^1.0.0-rc.3",
     "dedent": "^0.7.0",
+    "jasmine-core": "~3.6.0",
+    "jasmine-spec-reporter": "~6.0.0",
+    "karma": "~5.2.3",
+    "@types/jasmine": "~3.3.8",
+    "@types/jasminewd2": "~2.0.3",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage-istanbul-reporter": "~3.0.3",
+    "karma-jasmine": "~4.0.1",
+    "karma-jasmine-html-reporter": "^1.5.4",
+    "protractor": "~7.0.0",
+    "ng-packagr": "^10.1.2",
     "rimraf": "^3.0.2",
     "svg-to-vue": "^0.7.0",
     "svgo": "^1.3.2",
-    "vue-template-compiler": "^2.6.11"
+    "typescript": "~4.0.3",
+    "vue-template-compiler": "^2.6.12",
+    "rxjs": "~6.6.3",
+    "zone.js": "~0.11.1"
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "npm run build-outline && npm run build-solid && npm run build-react && npm run build-vue",
+    "dev-ng": "npm run build-angular && cd ./angular/heroicons/dist && npm link",
+    "build": "npm run build-outline && npm run build-solid && npm run build-react && npm run build-vue && npm run build-angular",
     "build-react": "rm -rf ./react && mkdir ./react && mkdir ./react/solid && mkdir ./react/outline && node ./scripts/build-react.js",
+    "build-angular": "rm -rf ./angular/heroicons/dist && rm -rf angular/heroicons/src/lib/icons && mkdir ./angular/heroicons/src/lib/icons && node ./scripts/build-angular.js && ng build heroicons --prod && cd ./angular/heroicons/dist && npm pack",
     "build-vue": "rm -rf ./vue && mkdir ./vue && mkdir ./vue/solid && mkdir ./vue/outline && node ./scripts/build-vue.js",
     "build-outline": "svgo --config=svgo.outline.yaml -f ./src/outline -o ./optimized/outline --pretty --indent=2 && rm -rf ./outline && cp -R ./optimized/outline ./outline",
     "build-solid": "svgo --config=svgo.solid.yaml -f ./src/solid -o ./optimized/solid --pretty --indent=2 && rm -rf ./solid && cp -R ./optimized/solid ./solid"
@@ -26,6 +56,7 @@
     "react/",
     "vue/",
     "outline/",
-    "solid/"
+    "solid/",
+    "angular/"
   ]
 }

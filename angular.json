@@ -1,0 +1,50 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "angular",
+  "projects": {
+    "heroicons": {
+      "projectType": "library",
+      "root": "angular/heroicons",
+      "sourceRoot": "angular/heroicons/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "angular/heroicons/tsconfig.lib.json",
+            "project": "angular/heroicons/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "angular/heroicons/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "angular/heroicons/src/test.ts",
+            "tsConfig": "angular/heroicons/tsconfig.spec.json",
+            "karmaConfig": "angular/heroicons/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "angular/heroicons/tsconfig.lib.json",
+              "angular/heroicons/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }},
+  "cli": {
+    "analytics": false
+  },
+  "defaultProject": "heroicons"
+}
