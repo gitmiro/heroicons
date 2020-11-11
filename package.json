@@ -1,11 +1,11 @@
 {
   "name": "heroicons",
-  "version": "0.4.2",
+  "version": "0.4.4",
   "license": "MIT",
   "dependencies": {
     "tslib": "^2.0.3"
   },
-  "devDependencies": {
+  "devDependencies": { 
     "@angular/animations": "^10.2.3",
     "@angular/common": "^10.2.3",
     "@angular/core": "^10.2.3",
@@ -45,6 +45,7 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "dev-ng": "npm run build-angular && cd ./angular/heroicons/dist && npm link",
+    "publish-angular": "npm run build-angular && cd ./angular/heroicons/dist && npm publish",
     "build": "npm run build-outline && npm run build-solid && npm run build-react && npm run build-vue && npm run build-angular",
     "build-react": "rm -rf ./react && mkdir ./react && mkdir ./react/solid && mkdir ./react/outline && node ./scripts/build-react.js",
     "build-angular": "rm -rf ./angular/heroicons/dist && rm -rf angular/heroicons/src/lib/icons && mkdir ./angular/heroicons/src/lib/icons && node ./scripts/build-angular.js && ng build heroicons --prod && cd ./angular/heroicons/dist && npm pack",
