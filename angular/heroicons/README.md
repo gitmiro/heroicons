@@ -1,24 +1,55 @@
-# Heroicon
+# NG Heroicon
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.3.
+A set of free MIT-licensed high-quality SVG icons for you to use in your web projects.
 
-## Code scaffolding
+This project is a fork of https://github.com/tailwindlabs/heroicons which enables
+the use for Angular projects, providing a component to display the heroicon.
 
-Run `ng generate component component-name --project heroicon` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project heroicon`.
-> Note: Don't forget to add `--project heroicon` or else it will be added to the default project in your `angular.json` file. 
+This project uses some code ideas from https://github.com/ashley-hunter/ng-heroicons, fixing some stuff
+like enabling the icon className customization to inject TailwindCSS classes.
 
-## Build
+Preview and search at https://www.heroicons.com
 
-Run `ng build heroicon` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Installing Library
 
-## Publishing
+```
+npm i ng-heroicon
+```
 
-After building your library with `ng build heroicon`, go to the dist folder `cd dist/heroicon` and run `npm publish`.
+or
 
-## Running unit tests
+```
+yarn add ng-heroicon
+```
 
-Run `ng test heroicon` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Using Icons
 
-## Further help
+Import `HeroIconsModule` from 'ng-heroicons', along with any icons you want to include.
+To include icons add them to the `withIcons` function call, e.g.:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```typescript
+import { annotation, menu, HeroIconsModule } from 'ng-heroicon';
+
+@NgModule({
+  declarations: [
+  ],
+  imports: [
+    HeroIconModule.withIcons({ 
+      annotation,
+      menu 
+    })
+  ],
+})
+export class AppModule {
+}
+```
+
+You can import different icons in each lazy loaded module to reduce the icons loaded in each bundle.
+
+To insert an icon use the following HTML:
+
+```html
+<hero-icon name="annotation" type="outline" class="w-6 h-6"></hero-icon>
+<hero-icon name="annotation" type="solid" class="w-4 h4 text-gray-600"></hero-icon>
+<hero-icon [name]="'menu'" [type]="'solid'" [class]="'w-4 h4 text-red-900'"></hero-icon>
+```
