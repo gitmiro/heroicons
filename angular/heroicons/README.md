@@ -24,7 +24,7 @@ yarn add ng-heroicon
 
 ## Using Icons
 
-Import `HeroIconsModule` from 'ng-heroicons', along with any icons you want to include.
+Using the library is simple, start with a `import {HeroIconModule} from 'ng-heroicon'`, along with any icons you want to include.
 To include icons add them to the `withIcons` function call, e.g.:
 
 ```typescript
@@ -50,6 +50,6 @@ To insert an icon use the following HTML:
 
 ```html
 <hero-icon name="annotation" type="outline" class="w-6 h-6"></hero-icon>
-<hero-icon name="annotation" type="solid" class="w-4 h4 text-gray-600"></hero-icon>
-<hero-icon [name]="'menu'" [type]="'solid'" [class]="'w-4 h4 text-red-900'"></hero-icon>
+<hero-icon name="annotation" type="solid" class="w-4 h-4 text-gray-600"></hero-icon>
+<hero-icon [name]="'menu'" [type]="'solid'" [class]="'w-4 h-4 text-red-900'"></hero-icon>
 ```

@@ -8,7 +8,7 @@
     "ng",
     "icons"
   ],
-  "homepage": "https://github.com/renatoaraujoc/heroicons#readme",
+  "homepage": "https://github.com/renatoaraujoc/heroicons/tree/master/angular/heroicons#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/renatoaraujoc/heroicons.git"
@@ -16,8 +16,8 @@
   "author": "Renato Carneiro",
   "version": "0.4.4",
   "peerDependencies": {
-    "@angular/common": "^10.2.3",
-    "@angular/core": "^10.2.3"
+    "@angular/common": "^11.0.0",
+    "@angular/core": "^11.0.0"
   },
   "dependencies": {
     "tslib": "^2.0.0"
