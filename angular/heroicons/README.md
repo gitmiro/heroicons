@@ -28,7 +28,7 @@ Using the library is simple, start with a `import {HeroIconModule} from 'ng-hero
 To include icons add them to the `withIcons` function call, e.g.:
 
 ```typescript
-import { annotation, menu, HeroIconsModule } from 'ng-heroicon';
+import { annotation, menu, HeroIconModule } from 'ng-heroicon';
 
 @NgModule({
   declarations: [
