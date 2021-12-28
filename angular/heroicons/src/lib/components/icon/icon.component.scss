@@ -1,7 +1,27 @@
 :host {
-    ::ng-deep {
-        path {
-            stroke: currentColor;
-        }
+
+  &.hi-d-block {
+    display: block;
+  }
+
+  &.hi-d-inline-block {
+    display: inline-block;
+  }
+
+  &.hi-d-outline {
+    width: 24px;
+    height: 24px;
+  }
+
+  &.hi-d-solid {
+    width: 20px;
+    height: 20px;
+  }
+
+  ::ng-deep {
+    path {
+      stroke: currentColor;
     }
+  }
+
 }
