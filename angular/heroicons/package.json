@@ -16,8 +16,8 @@
     "url": "https://github.com/renatoaraujoc/heroicons.git"
   },
   "peerDependencies": {
-    "@angular/common": "^11.0.0",
-    "@angular/core": "^11.0.0"
+    "@angular/common": "^13.2.1",
+    "@angular/core": "^13.2.1"
   },
   "dependencies": {
     "tslib": "^2.0.0"
