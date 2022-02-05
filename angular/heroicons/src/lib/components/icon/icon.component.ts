@@ -6,6 +6,7 @@ import {
     HostBinding,
     Inject,
     Input,
+    OnDestroy,
     Renderer2,
     ViewChild,
 } from '@angular/core';
@@ -20,8 +21,7 @@ import {HeroIconDefaultHostDisplay, HeroIconOptions,} from '../../hero-icon.modu
     template: `
         <svg
                 xmlns="http://www.w3.org/2000/svg"
-                [attr.class]="class"
-                [attr.viewBox]="type === 'solid' ? '0 0 20 20' : '0 0 24 24'"
+                [attr.viewBox]="_type === 'solid' ? '0 0 20 20' : '0 0 24 24'"
                 stroke="currentColor"
                 fill="none"
                 #svgRef
@@ -30,101 +30,156 @@ import {HeroIconDefaultHostDisplay, HeroIconOptions,} from '../../hero-icon.modu
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['icon.component.scss'],
 })
-export class IconComponent implements AfterViewInit {
-    @HostBinding('class.hi-d-block')
-    private get isDisplayBlock() {
+export class IconComponent implements AfterViewInit, OnDestroy {
+
+    @HostBinding('class.hi-d-block') get isDisplayBlock() {
         return this.hostDisplay === 'block';
     }
 
-    @HostBinding('class.hi-d-inline-block')
-    private get isDisplayInlineBlock() {
+    @HostBinding('class.hi-d-inline-block') get isDisplayInlineBlock() {
         return this.hostDisplay === 'inlineBlock';
     }
 
-    @HostBinding('class.hi-d-solid')
-    private get shouldAttachDefaultSolidDimensions() {
-        return (
-            this.options.attachDefaultDimensionsIfNoneFound &&
-            !this._hostHasDimensions &&
-            this.type === 'solid'
-        );
+    _currRendered: {
+        name: HeroIconName,
+        type: 'outline' | 'solid'
+    } = null;
+
+    _name: HeroIconName;
+
+    @Input() set name(value: HeroIconName) {
+        const camelCasedIconName = toCamelCase(value);
+        // if there is no icon with this name warn the user as they probably forgot to import it
+        if (!this.icons.hasOwnProperty(camelCasedIconName)) {
+            this._name = null;
+            console.warn(
+                `No icon named ${camelCasedIconName} was found. You need to import it using the HeroIconModule.withIcons() on your @NgModule.`
+            );
+            return;
+        }
+        this._name = camelCasedIconName as HeroIconName;
+        this.__renderIcon();
     }
 
-    @HostBinding('class.hi-d-outline')
-    private get shouldAttachDefaultOutlineDimensions() {
-        return (
-            this.options.attachDefaultDimensionsIfNoneFound &&
-            !this._hostHasDimensions &&
-            this.type === 'outline'
-        );
+
+    _type: 'outline' | 'solid' = 'outline';
+
+    @Input() set type(value: 'outline' | 'solid') {
+        this._type = ['outline', 'solid'].includes(value) ? value : 'outline';
+        this.__renderIcon();
     }
 
-    @Input() name: HeroIconName;
+    @Input() hostDisplay: HeroIconDefaultHostDisplay = this.options.defaultHostDisplay as HeroIconDefaultHostDisplay;
 
-    @Input() type: 'outline' | 'solid' = 'outline';
+    _oldClasses = [];
+    _classes = null;
 
-    @Input() hostDisplay: HeroIconDefaultHostDisplay = this.options
-        .defaultHostDisplay as HeroIconDefaultHostDisplay;
+    @Input() set class(value: string) {
+        this._classes = value;
+        this.__applyClasses();
+    }
 
-    @Input() class = '';
+    @ViewChild('svgRef') _svgRef: ElementRef<SVGElement>;
 
-    @ViewChild('svgRef') svg: ElementRef;
+    _isAfterViewInit = false;
 
-    /**
-     * This has to start as true!!
-     */
-    _hostHasDimensions = true;
+    resizeObserver: ResizeObserver;
 
     private readonly icons: Readonly<Record<string, { solid: string; outline: string }>> = {};
 
     constructor(
-        private readonly elementRef: ElementRef<HTMLElement>,
+        private readonly _elementRef: ElementRef<HTMLElement>,
         private readonly renderer: Renderer2,
         @Inject(HI_ICON_SET_TOKEN)
             iconsets: ReadonlyArray<Record<string, { solid: string; outline: string }>>,
         @Inject(HI_OPTIONS_TOKEN) private options: HeroIconOptions
     ) {
-        // flatter the array into an object
+        // Flatter the array into an object
         this.icons = iconsets.reduce((icons, iconset) => ({
             ...icons,
             ...iconset,
         }));
-    }
 
-    private __hostHasDimensions() {
-        const hostWidth = window
-            .getComputedStyle(this.elementRef.nativeElement, null)
-            .getPropertyValue('width');
-        const hostHeight = window
-            .getComputedStyle(this.elementRef.nativeElement, null)
-            .getPropertyValue('height');
-        const hasWidth = parseInt(hostWidth) !== 0 && hostWidth !== 'auto';
-        const hasHeight = parseInt(hostHeight) !== 0 && hostHeight !== 'auto';
-
-        this._hostHasDimensions = hasWidth || hasHeight;
+        // ResizeObserver
+        if (this.options.attachDefaultDimensionsIfNoneFound) {
+            this.resizeObserver = new ResizeObserver(() => this.__attachRootDimensionClass());
+            this.resizeObserver.observe(this._elementRef.nativeElement);
+        }
     }
 
     ngAfterViewInit(): void {
-        // convert a hyphenated name into a camel case name
-        const name = toCamelCase(this.name) as HeroIconName;
+        this._isAfterViewInit = true;
+        this.__renderIcon();
+        this._oldClasses = this._elementRef.nativeElement.classList.value.split(' ').filter((clz) => {
+            return !['hi-d-outline', 'hi-d-solid', 'hi-d-block', 'hi-d-inline-block'].includes(clz);
+        });
+        this.__applyClasses();
 
-        // if there is no icon with this name warn the user as they probably forgot to import it
-        // eslint-disable-next-line no-prototype-builtins
-        if (!this.icons.hasOwnProperty(name)) {
-            console.warn(
-                `No icon named ${name} was found. You need to import it using the HeroIconModule.withIcons() on your @NgModule.`
-            );
-            return;
+        // Attach default dimensions after first icon render
+        // consecutive changes on class will trigger ResizeObserver
+        if (this.options.attachDefaultDimensionsIfNoneFound) {
+            this.__attachRootDimensionClass();
         }
+    }
+
+    private __applyClasses() {
+        // set svg class
+        if (this._svgRef) {
+            // Remove previous classes
+            if (this._oldClasses.length > 0) {
+                this._elementRef.nativeElement.classList.remove(...this._oldClasses);
+                this._svgRef.nativeElement.classList.remove(...this._oldClasses);
+            }
+            // Attach new classes
+            const clz = this._classes.trim().length > 0 ? this._classes.trim().split(' ') : [];
+            this._oldClasses = clz;
+            if (clz.length > 0) {
+                this._svgRef.nativeElement.classList.add(...clz);
+            }
+        }
+    }
+
+    private __attachRootDimensionClass() {
+        this._elementRef.nativeElement.classList.remove('hi-d-outline', 'hi-d-solid');
+
+        setTimeout(() => {
+            const rootElem = this._elementRef.nativeElement;
+            const {width: rootWidth, height: rootHeight} = rootElem.getBoundingClientRect();
+            const rootHasDimensions = rootWidth > 0 && rootHeight > 0;
+            const svgElem = this._svgRef.nativeElement;
+            const {width: svgWidth, height: svgHeight} = svgElem.getBoundingClientRect();
+            const svgHasDimensions = svgWidth > 0 && svgHeight > 0;
+
+            if (!rootHasDimensions && !svgHasDimensions) {
+                rootElem.classList.add(this._type === 'outline' ? 'hi-d-outline' : 'hi-d-solid');
+            }
+        });
+    }
+
+    ngOnDestroy() {
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+        }
+    }
+
+    private get __needsToRender() {
+        if (!this._isAfterViewInit || !this._name || !this._type)
+            return false;
+
+        return !this._currRendered || !(this._currRendered.name === this._name && this._currRendered.type === this._type);
+    }
+
+    private __renderIcon() {
+        if (!this.__needsToRender) return;
 
         this.renderer.setProperty(
-            this.svg.nativeElement,
+            this._svgRef.nativeElement,
             'innerHTML',
-            this.icons[name][this.type]
+            this.icons[this._name][this._type]
         );
-
-        if (this.options.attachDefaultDimensionsIfNoneFound) {
-            this.__hostHasDimensions();
-        }
+        this._currRendered = {
+            name: this._name,
+            type: this._type
+        };
     }
 }

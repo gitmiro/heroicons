@@ -1,6 +1,7 @@
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {IconComponent} from './components';
 import {HI_ICON_SET_TOKEN, HI_OPTIONS_TOKEN} from './injection-tokens';
+import {CommonModule} from '@angular/common';
 
 export type HeroIconDefaultHostDisplay = 'block' | 'inlineBlock' | 'none';
 export type HeroIconOptions = {
@@ -23,6 +24,7 @@ const defaultOptions: HeroIconOptions = {
 };
 
 @NgModule({
+    imports: [CommonModule],
     declarations: [IconComponent],
     exports: [IconComponent],
 })
