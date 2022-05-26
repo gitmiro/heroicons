@@ -41,16 +41,17 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "dev-ng": "npm run build-angular-icons && npm run build-angular-lib-dev && cd ./angular/heroicons/dist && npm link",
-    "publish-angular": "npm run build-angular && cd ./angular/heroicons/dist && npm publish",
-    "build": "npm run build-outline && npm run build-solid && npm run build-react && npm run build-vue && npm run build-angular",
-    "pack-angular-lib": "./angular/heroicons/dist && npm pack",
-    "build-angular-lib-prod": "ng build heroicons --configuration production",
-    "build-angular-lib-dev": "ng build heroicons",
-    "build-angular-icons": "rm -rf ./angular/heroicons/dist && rm -rf ./angular/heroicons/src/lib/icons && mkdir ./angular/heroicons/src/lib/icons && node ./scripts/build-angular.js",
-    "build-react": "rm -rf ./react && mkdir ./react && mkdir ./react/solid && mkdir ./react/outline && node ./scripts/build.js react",
-    "build-vue": "rm -rf ./vue && mkdir ./vue && mkdir ./vue/solid && mkdir ./vue/outline && node ./scripts/build.js vue",
-    "build-outline": "svgo --config=svgo.outline.yaml -f ./src/outline -o ./optimized/outline --pretty --indent=2 && rm -rf ./outline && cp -R ./optimized/outline ./outline",
-    "build-solid": "svgo --config=svgo.solid.yaml -f ./src/solid -o ./optimized/solid --pretty --indent=2 && rm -rf ./solid && cp -R ./optimized/solid ./solid"
+    "publish-angular": "npm run build-angular-lib-prod && cd ./angular/heroicons/dist && npm pack && npm publish",
+    "----- Build Angular Lib -----": "---",
+    "build-angular-lib-prod": "npm run build-angular-icons && ng build heroicons --configuration production",
+    "build-angular-lib-dev": "npm run build-angular-icons && ng build heroicons",
+    "----- Build Icons -----": "---",
+    "build-angular-icons": "npm run __build-outline && npm run __build-solid && npm run __build-angular",
+    "__build-angular": "rm -rf ./angular/heroicons/dist && rm -rf ./angular/heroicons/src/lib/icons && mkdir ./angular/heroicons/src/lib/icons && node ./scripts/build-angular.js",
+    "__build-react": "rm -rf ./react && mkdir ./react && mkdir ./react/solid && mkdir ./react/outline && node ./scripts/build.js react",
+    "__build-vue": "rm -rf ./vue && mkdir ./vue && mkdir ./vue/solid && mkdir ./vue/outline && node ./scripts/build.js vue",
+    "__build-outline": "svgo --config=svgo.outline.yaml -f ./src/outline -o ./optimized/outline --pretty --indent=2 && rm -rf ./outline && cp -R ./optimized/outline ./outline",
+    "__build-solid": "svgo --config=svgo.solid.yaml -f ./src/solid -o ./optimized/solid --pretty --indent=2 && rm -rf ./solid && cp -R ./optimized/solid ./solid"
   },
   "files": [
     "react/",
