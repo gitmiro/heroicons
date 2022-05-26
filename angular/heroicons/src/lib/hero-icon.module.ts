@@ -43,11 +43,19 @@ export class HeroIconModule {
             ? {...HeroIconModule.rootOptions, ...options}
             : HeroIconModule.rootOptions;
         HeroIconModule.rootOptions = opt;
+
         return {
             ngModule: HeroIconModule,
             providers: [
-                {provide: HI_ICON_SET_TOKEN, useValue: icons, multi: true},
-                {provide: HI_OPTIONS_TOKEN, useValue: opt},
+                {
+                    provide: HI_ICON_SET_TOKEN,
+                    useValue: icons,
+                    multi: true
+                },
+                {
+                    provide: HI_OPTIONS_TOKEN,
+                    useValue: opt
+                },
             ],
         };
     }
@@ -69,8 +77,15 @@ export class HeroIconModule {
         return {
             ngModule: HeroIconModule,
             providers: [
-                {provide: HI_ICON_SET_TOKEN, useValue: icons, multi: true},
-                opt ? {provide: HI_OPTIONS_TOKEN, useValue: opt} : [],
+                {
+                    provide: HI_ICON_SET_TOKEN,
+                    useValue: icons,
+                    multi: true
+                },
+                opt ? {
+                    provide: HI_OPTIONS_TOKEN,
+                    useValue: opt
+                } : [],
             ],
         };
     }

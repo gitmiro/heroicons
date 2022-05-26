@@ -16,12 +16,7 @@
       "dom"
     ],
     "paths": {
-      "heroicons/ng": [
-        "angular/heroicons/dist"
-      ],
-      "heroicons/ng/*": [
-        "angular/heroicons/dist/*"
-      ]
+      "ng-heroicon": ["angular/heroicons/src/public-api"],
     }
   }
 }

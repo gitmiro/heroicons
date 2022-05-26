@@ -27,9 +27,14 @@ rimraf('./angular/heroicons/src/lib/icons/*')
             fs.writeFileSync('./angular/heroicons/src/lib/icons/icons-names.ts', iconTypes);
 
             // export icons paths
-            fs.writeFileSync('./angular/heroicons/src/lib/icons/icons.ts', Object.keys(icons).map(icon => {
+            const iconsArr = Object.keys(icons).map(icon => {
                 return `export const ${camelcase(icon)} = ${JSON.stringify(icons[icon])};`
-            }).join('\n'));
+            });
+            const allIcons = `export const allIcons = { ${
+                Object.keys(icons).map((icon) => camelcase(icon)).join(', ')
+            } };`;
+            const fileContents = `${iconsArr.join('\n')}\n${allIcons}`;
+            fs.writeFileSync('./angular/heroicons/src/lib/icons/icons.ts', fileContents);
         })
     })
     .then(() => console.log('Finished building icons for Angular!'))
